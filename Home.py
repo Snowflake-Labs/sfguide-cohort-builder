@@ -3,6 +3,7 @@ from snowflake.snowpark import Session
 import pandas as pd
 import os
 
+
 def initialize_session_state():
     st.session_state.card_bg_color = "#eceff1"
     st.session_state.header_bg_color = "#37474f"
@@ -77,6 +78,7 @@ def initialize_session_state():
     if 'preview_dataset' not in st.session_state:
         st.session_state.preview_dataset = pd.DataFrame()
 
+
 class CohortBuilder:
     def __init__(self):
         # Set the page config in the constructor to ensure it is called only once
@@ -98,7 +100,8 @@ class CohortBuilder:
             session = Session.builder.getOrCreate()
         except Exception as e1:
             try:
-                session = Session.builder.configs(st.secrets.connections.snowflake).create()
+                connection_parameters = dict(st.secrets["account"])
+                session = Session.builder.configs(connection_parameters).create()
             except Exception as e2:
                 st.error(f"Failed to connect to Snowflake. Initial error: {e1}. Secondary error: {e2}")
                 return None
@@ -181,6 +184,7 @@ class CohortBuilder:
         ---
         Happy Cohorting! 🚀
         """)
+
 
 if __name__ == "__main__":
     app = CohortBuilder()
